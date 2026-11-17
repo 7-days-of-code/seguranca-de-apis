@@ -1,0 +1,14 @@
+# Ambiente virtual
+.venv/
+venv/
+
+# Banco de dados gerado pelo seed.py
+*.db
+
+# Segredos locais
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/

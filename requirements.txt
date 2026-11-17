@@ -1,0 +1,8 @@
+# Dependências do Banco Pop. Versões fixadas para evitar surpresas de incompatibilidade.
+# Instale com:  pip install -r requirements.txt
+fastapi==0.115.5
+uvicorn[standard]==0.32.1
+sqlalchemy==2.0.36
+python-multipart==0.0.17
+pytest==8.3.4
+httpx==0.28.1
