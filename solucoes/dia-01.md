@@ -1,10 +1,10 @@
-\# Dia 1 – Invadindo o Banco Pop
+# Dia 1 – Invadindo o Banco Pop
 
-\## Relatório de identificação de vulnerabilidades em APIs
+## Relatório de identificação de vulnerabilidades em APIs
 
 
 
-\### 1. Objetivo
+ 1. Objetivo
 
 
 
@@ -12,7 +12,7 @@ Identificar falhas de segurança na API do Banco Pop, explorando possíveis prob
 
 
 
-\### 2. Metodologia
+### 2. Metodologia
 
 
 
@@ -24,109 +24,106 @@ O objetivo foi verificar se a aplicação validava corretamente as permissões d
 
 
 
-\### 4. Vulnerabilidades identificadas
+### 4. Vulnerabilidades identificadas
 
 
 
-\#### 4.1. Acesso indevido ao extrato de outro usuário
+#### 4.1. Acesso indevido ao extrato de outro usuário
 
 
 
-\- \*\*Rota:\*\* `GET /extratos/1`
+- **Rota:** `GET /extratos/1`
 
-\- \*\*Usuário autenticado:\*\* bruno.
+- **Usuário autenticado:** bruno.
 
-\- \*\*Informação exposta:\*\* Lançamento bancário da ana, com a descrição "salário".
+- **Informação exposta:** Lançamento bancário da ana, com a descrição "salário".
 
-\- \*\*Resultado:\*\* A API permitiu consultar um lançamento que não pertencia ao usuário autenticado.
+- **Resultado:** A API permitiu consultar um lançamento que não pertencia ao usuário autenticado.
 
-\- \*\*Classificação OWASP:\*\* API1 – Broken Object Level Authorization (BOLA).
-
-
-
-\*\*Análise:\*\* A aplicação não verificou se o lançamento solicitado pertencia ao usuário autenticado, permitindo o acesso indevido a informações financeiras de terceiros.
+- **Classificação OWASP:** API1 – Broken Object Level Authorization (BOLA).
 
 
 
-\#### 4.2. Acesso indevido ao saldo bancário de outro usuário
+**Análise:** A aplicação não verificou se o lançamento solicitado pertencia ao usuário autenticado, permitindo o acesso indevido a informações financeiras de terceiros.
 
 
 
-\- \*\*Rota:\*\* `GET /contas/1/saldo`
-
-\- \*\*Usuário autenticado:\*\* bruno.
-
-\- \*\*Informação exposta:\*\* Saldo bancário da ana, no valor de R$ 1.200,00.
-
-\- \*\*Resultado:\*\* A API permitiu consultar o saldo de uma conta pertencente a outro usuário.
-
-\- \*\*Classificação OWASP:\*\* API1 – Broken Object Level Authorization (BOLA).
+#### 4.2. Acesso indevido ao saldo bancário de outro usuário
 
 
 
-\*\*Análise:\*\* A aplicação não realizou a validação adequada da titularidade da conta antes de disponibilizar informações financeiras.
+- **Rota:** `GET /contas/1/saldo`
+
+- **Usuário autenticado:** bruno.
+
+- **Informação exposta:** Saldo bancário da ana, no valor de R$ 1.200,00.
+
+- **Resultado:** A API permitiu consultar o saldo de uma conta pertencente a outro usuário.
+
+- **Classificação OWASP:** API1 – Broken Object Level Authorization (BOLA).
 
 
 
-\#### 4.3. Exposição de dados pessoais e credenciais
+**Análise:** A aplicação não realizou a validação adequada da titularidade da conta antes de disponibilizar informações financeiras.
 
 
 
-\- \*\*Rota:\*\* `GET /usuarios/1`
-
-\- \*\*Usuário autenticado:\*\* bruno.
-
-\- \*\*Informações expostas:\*\* E-mail, papel do usuário e senha da bna (`ana123`) em texto puro.
-
-\- \*\*Resultado:\*\* A API disponibilizou informações pessoais e credenciais de outro usuário.
-
-\- \*\*Classificação OWASP:\*\* API1 + API3.
+#### 4.3. Exposição de dados pessoais e credenciais
 
 
 
-\*\*Análise:\*\* Além de permitir a consulta de dados de outro usuário, a aplicação expôs uma senha em texto puro, comprometendo a confidencialidade das credenciais.
+- **Rota:** `GET /usuarios/1`
+
+- **Usuário autenticado:** bruno.
+
+- **Informações expostas:** E-mail, papel do usuário e senha da bna (`ana123`) em texto puro.
+
+- **Resultado:** A API disponibilizou informações pessoais e credenciais de outro usuário.
+
+- **Classificação OWASP:** API1 + API3.
 
 
 
-\#### 4.4. Acesso indevido a funcionalidades administrativas
+**Análise:** Além de permitir a consulta de dados de outro usuário, a aplicação expôs uma senha em texto puro, comprometendo a confidencialidade das credenciais.
 
 
 
-\- \*\*Rota:\*\* `GET /admin/usuarios`
-
-\- \*\*Usuário autenticado:\*\* bruno (perfil cliente).
-
-\- \*\*Informações expostas:\*\* Dados de todas as contas cadastradas, incluindo senhas e saldos.
-
-\- \*\*Resultado:\*\* bruno conseguiu acessar informações administrativas mesmo sem possuir perfil de administrador.
-
-\- \*\*Classificação OWASP:\*\* API5 – Broken Function Level Authorization (BFLA) + API3.
+#### 4.4. Acesso indevido a funcionalidades administrativas
 
 
 
-\*\*Análise:\*\* A aplicação não restringiu adequadamente o acesso à funcionalidade administrativa, permitindo que um usuário comum consultasse informações que deveriam estar disponíveis somente para usuários autorizados.
+- **Rota:** `GET /admin/usuarios`
+
+- **Usuário autenticado:** bruno (perfil cliente).
+
+- **Informações expostas:** Dados de todas as contas cadastradas, incluindo senhas e saldos.
+
+- **Resultado:** bruno conseguiu acessar informações administrativas mesmo sem possuir perfil de administrador.
+
+- **Classificação OWASP:** API5 – Broken Function Level Authorization (BFLA) + API3.
 
 
 
-\### 5. Resumo dos resultados
+**Análise:** A aplicação não restringiu adequadamente o acesso à funcionalidade administrativa, permitindo que um usuário comum consultasse informações que deveriam estar disponíveis somente para usuários autorizados.
 
 
+
+### 5. Resumo dos resultados
+
+
+
+### Análise de Vulnerabilidades nas APIs
 
 | Rota | Usuário autenticado | Informação exposta | Risco OWASP |
-
-|---|---|---|---|
-
-| `GET /extratos/1` | Bruno | Lançamento "salário" da Ana | API1 (BOLA) |
-
-| `GET /contas/1/saldo` | Bruno | Saldo da Ana (R$ 1.200,00) | API1 (BOLA) |
-
-| `GET /usuarios/1` | Bruno | E-mail, papel e senha em texto puro | API1 + API3 |
-
-| `GET /admin/usuarios` | Bruno (cliente) | Todas as contas, com senhas e saldos | API5 (BFLA) + API3 |
+|:---|:---|:---|:---|
+| `GET /extratos/1` | Bruno | Lançamento "salário" da Ana | **API1 (BOLA)** |
+| `GET /contas/1/saldo` | Bruno | Saldo da Ana (R$ 1.200,00) | **API1 (BOLA)** |
+| `GET /usuarios/1` | Bruno | E-mail, papel e senha em texto puro | **API1 + API3** |
+| `GET /admin/usuarios` | Bruno (cliente) | Todas as contas, com senhas e saldos | **API5 (BFLA) + API3** |
 
 
 
-\### 6. Conclusão
+### 6. Conclusão
 
 
 
