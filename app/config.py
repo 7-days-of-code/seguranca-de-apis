@@ -6,8 +6,13 @@ de propósito. Antes de "arrumar" qualquer coisa aqui, leia o FALHAS-PLANTADAS.m
 
 import os
 
-# Segredo usado para assinar o token de sessão.
-SEGREDO = "banco-pop-123"
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# Segredo usado para assinar o token de sessão (vem do arquivo .env).
+SEGREDO = os.environ["BANCO_POP_SEGREDO"]
+MINUTOS_DO_TOKEN = 30
 
 # O banco é um arquivo SQLite na raiz do projeto. Apagar o arquivo e rodar o
 # seed.py de novo volta tudo ao estado inicial.

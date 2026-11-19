@@ -1,45 +1,42 @@
-"""Login, token de sessão e a dependência que diz quem está chamando a API.
+"""Login, token de sessão e a dependência que diz quem está chamando a API."""
 
-Alvo de treino: leia o FALHAS-PLANTADAS.md antes de mexer.
-"""
+from datetime import datetime, timedelta, timezone
 
-import base64
-import json
-
+import jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
+from pwdlib import PasswordHash
 from sqlalchemy.orm import Session
 
+from app.config import MINUTOS_DO_TOKEN, SEGREDO
 from app.database import pegar_sessao
 from app.models import Usuario
 
 esquema_token = OAuth2PasswordBearer(tokenUrl="login")
+hasher = PasswordHash.recommended()
 
 
 def conferir_senha(senha_enviada: str, senha_guardada: str) -> bool:
-    return senha_enviada == senha_guardada
+    return hasher.verify(senha_enviada, senha_guardada)
 
 
 def guardar_senha(senha: str) -> str:
-    return senha
+    return hasher.hash(senha)
 
 
 def criar_token(usuario: Usuario) -> str:
-    """Empacota os dados do usuário em um texto que viaja no cabeçalho."""
+    """Gera um JWT assinado com o SEGREDO e com prazo de validade."""
     conteudo = {
-        "sub": usuario.id,
-        "nome": usuario.nome,
-        "papel": usuario.papel,
+        "sub": str(usuario.id),
+        "exp": datetime.now(timezone.utc) + timedelta(minutes=MINUTOS_DO_TOKEN),
     }
-    bruto = json.dumps(conteudo).encode("utf-8")
-    return base64.urlsafe_b64encode(bruto).decode("utf-8")
+    return jwt.encode(conteudo, SEGREDO, algorithm="HS256")
 
 
 def ler_token(token: str) -> dict | None:
     try:
-        bruto = base64.urlsafe_b64decode(token.encode("utf-8"))
-        return json.loads(bruto)
-    except Exception:
+        return jwt.decode(token, SEGREDO, algorithms=["HS256"])
+    except jwt.InvalidTokenError:
         return None
 
 
@@ -56,7 +53,7 @@ def usuario_logado(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    usuario = sessao.get(Usuario, conteudo.get("sub"))
+    usuario = sessao.get(Usuario, int(conteudo["sub"]))
     if usuario is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
