@@ -88,13 +88,8 @@ erros_de_login: dict[str, list[float]] = {}
 | Segredo no código | `app/config.py` | Leitura do código-fonte | Segredo visível | Lido do `.env` | **API8** |
 | Login sem limite | `app/routes/auth.py` | `tentativas_de_login.py` | `401` sem limite | 5× `401`, depois `429` | **API2** |
 
-### 5. Pontos que continuam em aberto
 
-- `GET /usuarios/1` ainda devolve o campo `senha` (agora como hash) e o Bruno ainda consegue consultar dados da Ana. Essas falhas de autorização e exposição de dados são corrigidas nos Dias 3 e 4.
-- A contagem de tentativas fica na memória da API: ela é zerada quando a API reinicia e não é compartilhada entre várias instâncias. Para uma API em produção, essa contagem iria para um armazenamento compartilhado.
-
-### 6. Conclusão
+### 5. Conclusão
 
 As três falhas de autenticação identificadas no Dia 1 foram corrigidas e verificadas repetindo o ataque original. A API passou a guardar só o hash das senhas, a emitir tokens assinados com prazo de validade e a bloquear tentativas de login em massa. O segredo de assinatura saiu do código.
 
-A API agora sabe com segurança **quem** está fazendo cada requisição. O próximo passo é conferir **o que** cada pessoa pode acessar, que é o tema do Dia 3.
