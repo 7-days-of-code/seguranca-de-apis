@@ -1,23 +1,24 @@
 # Dia 2 – Login que resiste a ataques
 
+## Arquivos desta solução
+
+Cada arquivo desta pasta substitui o arquivo de mesmo nome no projeto:
+
+| Arquivo desta pasta | Onde ele vai no projeto |
+|:---|:---|
+| `config.py` | `app/config.py` |
+| `security.py` | `app/security.py` |
+| `auth.py` | `app/routes/auth.py` |
+
+Além deles, acrescente `pwdlib[argon2]==0.3.1` e `PyJWT==2.15.1` ao `requirements.txt` e crie o `.env` a partir do `.env.example`.
+
 ## Relatório de correção das falhas de autenticação
 
 ### 1. Objetivo
 
-Corrigir as falhas de autenticação identificadas no Dia 1 na API do Banco Pop: senhas guardadas em texto puro, token de sessão que qualquer pessoa consegue fabricar e login sem limite de tentativas.
+Implementar a autenticação do Banco Pop: cadastro com senha guardada como hash, login que devolve um JWT com validade e limite de tentativas de login. Com isso, fecham-se as falhas encontradas no Dia 1: senha em texto puro, token que qualquer pessoa consegue fabricar e login sem limite de tentativas.
 
-### 2. Metodologia
-
-As correções foram feitas em três arquivos: `app/security.py`, `app/config.py` e `app/routes/auth.py`. Foram adicionadas duas bibliotecas ao `requirements.txt`, com as versões fixadas:
-
-- `pwdlib[argon2]==0.3.1`, para o hash das senhas;
-- `PyJWT==2.15.1`, para gerar e conferir o token assinado.
-
-O segredo de assinatura do token saiu do código e passou a ser lido do arquivo `.env`, que está no `.gitignore` e não vai para o repositório.
-
-Depois de cada correção, o banco foi recriado com `python seed.py` e o mesmo ataque foi repetido, para confirmar que ele deixou de funcionar.
-
-### 3. Falhas corrigidas
+### 2. Falhas corrigidas
 
 #### 3.1. Senha guardada em texto puro
 
