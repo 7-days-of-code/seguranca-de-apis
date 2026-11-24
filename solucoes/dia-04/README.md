@@ -202,9 +202,9 @@ Esperado:
 
 1. id 2, nome bruno, email e saldo 350, sem senha nem papel.
 2. Conta nova com id 4, saldo 0 e sem papel na resposta.
-3. 403.
+3. Status 403
 4. email trocado e saldo ainda 350.
-5. 403.
+5. Status 403
 
 Para repetir, pare o uvicorn e rode `python seed.py` e o `uvicorn` de novo, porque a conta `esperta` já existirá e o cadastro devolveria 409.
 
